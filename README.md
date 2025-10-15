@@ -14,3 +14,6 @@
 | 6 | Задание 6        | [Перейти](Task-6) | Игра MineSweeper (Сапёр)       |
 | 7 | Задание 7        | [Перейти](Task-7) | Пользовательские события       |
 | 8 | Задание 8        | [Перейти](Task-8) | Паззл                          |
+
+
+https://irsanama.github.io/Client-Side-Web-Development/
