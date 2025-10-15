@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Задачи на работу с числами</title>
+    <style>
+        body {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        .task {
+            background-color: white;
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            transition: transform 0.2s;
+        }
+        .task:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        }
+        h3 {
+            margin-top: 0;
+            color: #3498db;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 8px;
+        }
+        .input-group {
+            margin-bottom: 10px;
+        }
+        input {
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            width: 100%;
+            margin-top: 5px;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        .result {
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #f8f9fa;
+            border-radius: 4px;
+            min-height: 20px;
+            word-break: break-word;
+        }
+        .instructions {
+            background-color: #e8f4fc;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        .task-buttons {
+            display: flex;
+            gap: 5px;
+        }
+        .task-buttons button {
+            flex: 1;
+        }
+    </style>
+</head>
+<body>
+<h1>Задачи на работу с числами</h1>
+
+<div class="instructions">
+    <p>Введите данные в поля ниже и нажмите соответствующую кнопку для выполнения задачи.</p>
+</div>
+
+<div class="container">
+    <!-- Задача 1.1 -->
+    <div class="task">
+        <h3>1.1. Проверка взаимно простых чисел</h3>
+        <div class="input-group">
+            <input type="number" id="num1_1" placeholder="Первое число">
+        </div>
+        <div class="input-group">
+            <input type="number" id="num2_1" placeholder="Второе число">
+        </div>
+        <button onclick="task1_1()">Проверить</button>
+        <div class="result" id="result1_1"></div>
+    </div>
+
+    <!-- Задача 1.2 -->
+    <div class="task">
+        <h3>1.2. Проверка простого числа</h3>
+        <div class="input-group">
+            <input type="number" id="num1_2" placeholder="Число">
+        </div>
+        <button onclick="task1_2()">Проверить</button>
+        <div class="result" id="result1_2"></div>
+    </div>
+
+    <!-- Задача 1.3 -->
+    <div class="task">
+        <h3>1.3. Решето Эратосфена</h3>
+        <div class="input-group">
+            <input type="number" id="num1_3" placeholder="Верхняя граница N">
+        </div>
+        <button onclick="task1_3()">Найти простые числа</button>
+        <div class="result" id="result1_3"></div>
+    </div>
+
+    <!-- Задача 1.4 -->
+    <div class="task">
+        <h3>1.4. Первые N простых чисел</h3>
+        <div class="input-group">
+            <input type="number" id="num1_4" placeholder="Количество N">
+        </div>
+        <button onclick="task1_4()">Найти</button>
+        <div class="result" id="result1_4"></div>
+    </div>
+
+    <!-- Задача 1.5 -->
+    <div class="task">
+        <h3>1.5. Делители натурального числа</h3>
+        <div class="input-group">
+            <input type="number" id="num1_5" placeholder="Число N">
+        </div>
+        <button onclick="task1_5()">Найти делители</button>
+        <div class="result" id="result1_5"></div>
+    </div>
+
+    <!-- Задача 1.6 -->
+    <div class="task">
+        <h3>1.6. Разложение на простые множители</h3>
+        <div class="input-group">
+            <input type="number" id="num1_6" placeholder="Число N">
+        </div>
+        <button onclick="task1_6()">Разложить</button>
+        <div class="result" id="result1_6"></div>
+    </div>
+
+    <!-- Задача 1.7 -->
+    <div class="task">
+        <h3>1.7. Совершенные числа (N<5)</h3>
+        <div class="input-group">
+            <input type="number" id="num1_7" placeholder="Количество N" min="1" max="4">
+        </div>
+        <button onclick="task1_7()">Найти</button>
+        <div class="result" id="result1_7"></div>
+    </div>
+
+    <!-- Задача 1.8 -->
+    <div class="task">
+        <h3>1.8. Сумма трех простых чисел</h3>
+        <div class="input-group">
+            <input type="number" id="num1_8a" placeholder="Начало интервала N">
+        </div>
+        <div class="input-group">
+            <input type="number" id="num1_8b" placeholder="Конец интервала M">
+        </div>
+        <button onclick="task1_8()">Проверить</button>
+        <div class="result" id="result1_8"></div>
+    </div>
+
+    <!-- Задача 1.9 -->
+    <div class="task">
+        <h3>1.9. Проверка числа Фибоначчи</h3>
+        <div class="input-group">
+            <input type="number" id="num1_9" placeholder="Число">
+        </div>
+        <button onclick="task1_9()">Проверить</button>
+        <div class="result" id="result1_9"></div>
+    </div>
+
+    <!-- Задача 1.10 -->
+    <div class="task">
+        <h3>1.10. Двойной факториал</h3>
+        <div class="input-group">
+            <input type="number" id="num1_10" placeholder="Число N">
+        </div>
+        <button onclick="task1_10()">Вычислить</button>
+        <div class="result" id="result1_10"></div>
+    </div>
+
+    <!-- Задача 1.11 -->
+    <div class="task">
+        <h3>1.11. Пифагоровы тройки</h3>
+        <div class="input-group">
+            <input type="number" id="num1_11a" placeholder="Начало интервала N">
+        </div>
+        <div class="input-group">
+            <input type="number" id="num1_11b" placeholder="Конец интервала M">
+        </div>
+        <button onclick="task1_11()">Найти</button>
+        <div class="result" id="result1_11"></div>
+    </div>
+
+    <!-- Задача 1.12 -->
+    <div class="task">
+        <h3>1.12. Умножение/деление дробей</h3>
+        <div class="input-group">
+            <input type="text" id="num1_12a" placeholder="Первая дробь a/b">
+        </div>
+        <div class="input-group">
+            <input type="text" id="num1_12b" placeholder="Вторая дробь c/d">
+        </div>
+        <div class="task-buttons">
+            <button onclick="task1_12('multiply')">Умножить</button>
+            <button onclick="task1_12('divide')">Разделить</button>
+        </div>
+        <div class="result" id="result1_12"></div>
+    </div>
+
+    <!-- Задача 1.13 -->
+    <div class="task">
+        <h3>1.13. Сложение/вычитание дробей</h3>
+        <div class="input-group">
+            <input type="text" id="num1_13a" placeholder="Первая дробь a/b">
+        </div>
+        <div class="input-group">
+            <input type="text" id="num1_13b" placeholder="Вторая дробь c/d">
+        </div>
+        <div class="task-buttons">
+            <button onclick="task1_13('add')">Сложить</button>
+            <button onclick="task1_13('subtract')">Вычесть</button>
+        </div>
+        <div class="result" id="result1_13"></div>
+    </div>
+
+    <!-- Задача 1.14 -->
+    <div class="task">
+        <h3>1.14. Числа, делящиеся на свои цифры</h3>
+        <div class="input-group">
+            <input type="number" id="num1_14a" placeholder="Начало интервала N">
+        </div>
+        <div class="input-group">
+            <input type="number" id="num1_14b" placeholder="Конец интервала M">
+        </div>
+        <button onclick="task1_14()">Найти</button>
+        <div class="result" id="result1_14"></div>
+    </div>
+
+    <!-- Задача 1.15 -->
+    <div class="task">
+        <h3>1.15. Числа, делящиеся на сумму цифр</h3>
+        <div class="input-group">
+            <input type="number" id="num1_15a" placeholder="Начало интервала N">
+        </div>
+        <div class="input-group">
+            <input type="number" id="num1_15b" placeholder="Конец интервала M">
+        </div>
+        <button onclick="task1_15()">Найти</button>
+        <div class="result" id="result1_15"></div>
+    </div>
+</div>
+
+<script>
+    // Вспомогательные функции
+    function gcd(a, b) {
+        while (b !== 0) {
+            const temp = b;
+            b = a % b;
+            a = temp;
+        }
+        return a;
+    }
+
+    function isPrime(num) {
+        if (num < 2) return false;
+        if (num === 2) return true;
+        if (num % 2 === 0) return false;
+
+        const limit = Math.sqrt(num);
+        for (let i = 3; i <= limit; i += 2) {
+            if (num % i === 0) return false;
+        }
+        return true;
+    }
+
+    function parseFraction(str) {
+        const parts = str.split('/').map(Number);
+        if (parts.length !== 2 || parts.some(isNaN)) {
+            throw new Error('Неверный формат дроби. Используйте формат a/b');
+        }
+        return { numerator: parts[0], denominator: parts[1] };
+    }
+
+    function reduceFraction(fraction) {
+        const commonDivisor = gcd(fraction.numerator, fraction.denominator);
+        return {
+            numerator: fraction.numerator / commonDivisor,
+            denominator: fraction.denominator / commonDivisor
+        };
+    }
+
+    // 1.1. Проверка взаимно простых чисел
+    function areCoprime(a, b) {
+        return gcd(a, b) === 1;
+    }
+
+    function task1_1() {
+        const a = parseInt(document.getElementById('num1_1').value);
+        const b = parseInt(document.getElementById('num2_1').value);
+        if (isNaN(a) || isNaN(b) || a < 1 || b < 1) {
+            document.getElementById('result1_1').textContent = 'Пожалуйста, введите натуральные числа';
+            return;
+        }
+        const result = areCoprime(a, b) ?
+            `Числа ${a} и ${b} взаимно простые` :
+            `Числа ${a} и ${b} НЕ взаимно простые`;
+        document.getElementById('result1_1').textContent = result;
+    }
+
+    // 1.2. Проверка простого числа
+    function task1_2() {
+        const num = parseInt(document.getElementById('num1_2').value);
+        if (isNaN(num) || num < 1) {
+            document.getElementById('result1_2').textContent = 'Пожалуйста, введите натуральное число';
+            return;
+        }
+        const result = isPrime(num) ?
+            `Число ${num} простое` :
+            `Число ${num} составное`;
+        document.getElementById('result1_2').textContent = result;
+    }
+
+    // 1.3. Решето Эратосфена
+    function sieveOfEratosthenes(n) {
+        if (n < 2) return [];
+
+        const sieve = new Array(n + 1).fill(true);
+        sieve[0] = sieve[1] = false;
+
+        for (let i = 2; i * i <= n; i++) {
+            if (sieve[i]) {
+                for (let j = i * i; j <= n; j += i) {
+                    sieve[j] = false;
+                }
+            }
+        }
+
+        const primes = [];
+        for (let i = 2; i <= n; i++) {
+            if (sieve[i]) primes.push(i);
+        }
+        return primes;
+    }
+
+    function task1_3() {
+        const n = parseInt(document.getElementById('num1_3').value);
+        if (isNaN(n) || n < 1) {
+            document.getElementById('result1_3').textContent = 'Пожалуйста, введите натуральное число';
+            return;
+        }
+        const primes = sieveOfEratosthenes(n);
+        document.getElementById('result1_3').textContent =
+            `Простые числа до ${n}: ${primes.join(', ')}`;
+    }
+
+    // 1.4. Первые N простых чисел
+    function firstNPrimes(n) {
+        const primes = [];
+        let num = 2;
+
+        while (primes.length < n) {
+            if (isPrime(num)) {
+                primes.push(num);
+            }
+            num++;
+        }
+        return primes;
+    }
+
+    function task1_4() {
+        const n = parseInt(document.getElementById('num1_4').value);
+        if (isNaN(n) || n < 1) {
+            document.getElementById('result1_4').textContent = 'Пожалуйста, введите натуральное число';
+            return;
+        }
+        const primes = firstNPrimes(n);
+        document.getElementById('result1_4').textContent =
+            `Первые ${n} простых чисел: ${primes.join(', ')}`;
+    }
+
+    // 1.5. Поиск всех делителей числа
+    function findDivisors(n) {
+        const divisors = [];
+        for (let i = 1; i <= Math.sqrt(n); i++) {
+            if (n % i === 0) {
+                divisors.push(i);
+                if (i !== n / i) {
+                    divisors.push(n / i);
+                }
+            }
+        }
+        return divisors.sort((a, b) => a - b);
+    }
+
+    function task1_5() {
+        const n = parseInt(document.getElementById('num1_5').value);
+        if (isNaN(n) || n < 1) {
+            document.getElementById('result1_5').textContent = 'Пожалуйста, введите натуральное число';
+            return;
+        }
+        const divisors = findDivisors(n);
+        document.getElementById('result1_5').textContent =
+            `Делители числа ${n}: ${divisors.join(', ')}`;
+    }
+
+    // 1.6. Разложение на простые множители
+    function primeFactors(n) {
+        const factors = {};
+        let divisor = 2;
+
+        while (n > 1) {
+            while (n % divisor === 0) {
+                factors[divisor] = (factors[divisor] || 0) + 1;
+                n /= divisor;
+            }
+            divisor++;
+        }
+        return factors;
+    }
+
+    function task1_6() {
+        const n = parseInt(document.getElementById('num1_6').value);
+        if (isNaN(n) || n < 2) {
+            document.getElementById('result1_6').textContent = 'Пожалуйста, введите натуральное число больше 1';
+            return;
+        }
+        const factors = primeFactors(n);
+        let result = `Простые множители числа ${n}: `;
+        const factorsStr = Object.entries(factors)
+            .map(([factor, power]) => `${factor}^${power}`)
+            .join(' × ');
+        document.getElementById('result1_6').textContent = result + factorsStr;
+    }
+
+    // 1.7. Совершенные числа
+    function isPerfect(num) {
+        const divisors = findDivisors(num);
+        const sum = divisors.reduce((acc, val) => acc + val, 0);
+        return sum === 2 * num; // Сумма делителей должна быть равна 2*num (включая само число)
+    }
+
+    function findPerfectNumbers(n) {
+        const perfectNumbers = [];
+        let num = 2;
+
+        // Совершенные числа редки, поэтому ограничим поиск
+        while (perfectNumbers.length < n && num < 10000) {
+            if (isPerfect(num)) {
+                perfectNumbers.push(num);
+            }
+            num++;
+        }
+        return perfectNumbers;
+    }
+
+    function task1_7() {
+        const n = parseInt(document.getElementById('num1_7').value);
+        if (isNaN(n) || n < 1 || n > 4) {
+            document.getElementById('result1_7').textContent = 'Пожалуйста, введите число от 1 до 4';
+            return;
+        }
+        const perfectNums = findPerfectNumbers(n);
+        document.getElementById('result1_7').textContent =
+            `Первые ${n} совершенных чисел: ${perfectNums.join(', ')}`;
+    }
+
+    // 1.8. Сумма трех простых чисел
+    function canBeSumOfThreePrimes(num) {
+        if (num < 7) return false; // Наименьшая сумма трех простых: 2+2+3=7
+
+        // Если число четное, можно представить как 2 + 2 + (num-4)
+        // Если число нечетное, можно представить как 2 + 3 + (num-5)
+        // Проверяем, является ли (num-4) или (num-5) простым числом
+
+        if (num % 2 === 0) {
+            return isPrime(num - 4);
+        } else {
+            return isPrime(num - 5);
+        }
+    }
+
+    function task1_8() {
+        const n = parseInt(document.getElementById('num1_8a').value);
+        const m = parseInt(document.getElementById('num1_8b').value);
+        if (isNaN(n) || isNaN(m) || n < 1 || m < 1 || n > m) {
+            document.getElementById('result1_8').textContent = 'Пожалуйста, введите корректный интервал';
+            return;
+        }
+
+        const results = [];
+        for (let i = n; i <= m; i++) {
+            if (i % 2 === 1 && canBeSumOfThreePrimes(i)) {
+                results.push(i);
+            }
+        }
+
+        document.getElementById('result1_8').textContent =
+            `Нечетные числа из [${n},${m}], представимые как сумма трех простых: ${results.join(', ')}`;
+    }
+
+    // 1.9. Проверка числа Фибоначчи
+    function isFibonacci(num) {
+        if (num < 0) return false;
+
+        function isPerfectSquare(x) {
+            const s = Math.sqrt(x);
+            return s === Math.floor(s);
+        }
+
+        return isPerfectSquare(5 * num * num + 4) ||
+            isPerfectSquare(5 * num * num - 4);
+    }
+
+    function task1_9() {
+        const num = parseInt(document.getElementById('num1_9').value);
+        if (isNaN(num) || num < 0) {
+            document.getElementById('result1_9').textContent = 'Пожалуйста, введите неотрицательное число';
+            return;
+        }
+        const result = isFibonacci(num) ?
+            `Число ${num} является числом Фибоначчи` :
+            `Число ${num} НЕ является числом Фибоначчи`;
+        document.getElementById('result1_9').textContent = result;
+    }
+
+    // 1.10. Двойной факториал
+    function doubleFactorial(n) {
+        if (n < 0) return undefined;
+        if (n === 0 || n === 1) return 1;
+
+        let result = 1;
+        if (n % 2 === 0) {
+            // Четное n
+            for (let i = 2; i <= n; i += 2) {
+                result *= i;
+            }
+        } else {
+            // Нечетное n
+            for (let i = 1; i <= n; i += 2) {
+                result *= i;
+            }
+        }
+        return result;
+    }
+
+    function task1_10() {
+        const n = parseInt(document.getElementById('num1_10').value);
+        if (isNaN(n) || n < 0) {
+            document.getElementById('result1_10').textContent = 'Пожалуйста, введите неотрицательное число';
+            return;
+        }
+        const result = doubleFactorial(n);
+        document.getElementById('result1_10').textContent =
+            `${n}!! = ${result}`;
+    }
+
+    // 1.11. Пифагоровы тройки
+    function pythagoreanTriples(n, m) {
+        const triples = [];
+        for (let a = n; a <= m; a++) {
+            for (let b = a; b <= m; b++) {
+                const c = Math.sqrt(a * a + b * b);
+                if (c <= m && Number.isInteger(c)) {
+                    triples.push([a, b, c]);
+                }
+            }
+        }
+        return triples;
+    }
+
+    function task1_11() {
+        const n = parseInt(document.getElementById('num1_11a').value);
+        const m = parseInt(document.getElementById('num1_11b').value);
+        if (isNaN(n) || isNaN(m) || n < 1 || m < 1 || n > m) {
+            document.getElementById('result1_11').textContent = 'Пожалуйста, введите корректный интервал';
+            return;
+        }
+        const triples = pythagoreanTriples(n, m);
+        let result = `Пифагоровы тройки в интервале [${n},${m}]:\n`;
+        if (triples.length === 0) {
+            result += "Не найдено";
+        } else {
+            triples.forEach(triple => {
+                result += `(${triple[0]}, ${triple[1]}, ${triple[2]})\n`;
+            });
+        }
+        document.getElementById('result1_11').textContent = result;
+    }
+
+    // 1.12. Умножение/деление дробей
+    function multiplyFractions(frac1, frac2) {
+        const numerator = frac1.numerator * frac2.numerator;
+        const denominator = frac1.denominator * frac2.denominator;
+        return reduceFraction({ numerator, denominator });
+    }
+
+    function divideFractions(frac1, frac2) {
+        const numerator = frac1.numerator * frac2.denominator;
+        const denominator = frac1.denominator * frac2.numerator;
+        return reduceFraction({ numerator, denominator });
+    }
+
+    function task1_12(operation) {
+        const str1 = document.getElementById('num1_12a').value;
+        const str2 = document.getElementById('num1_12b').value;
+        try {
+            const frac1 = parseFraction(str1);
+            const frac2 = parseFraction(str2);
+            let result;
+            if (operation === 'multiply') {
+                result = multiplyFractions(frac1, frac2);
+            } else if (operation === 'divide') {
+                result = divideFractions(frac1, frac2);
+            }
+            document.getElementById('result1_12').textContent =
+                `Результат: ${result.numerator}/${result.denominator}`;
+        } catch (e) {
+            document.getElementById('result1_12').textContent = 'Ошибка: ' + e.message;
+        }
+    }
+
+    // 1.13. Сложение/вычитание дробей
+    function addFractions(frac1, frac2) {
+        const numerator = frac1.numerator * frac2.denominator + frac2.numerator * frac1.denominator;
+        const denominator = frac1.denominator * frac2.denominator;
+        return reduceFraction({ numerator, denominator });
+    }
+
+    function subtractFractions(frac1, frac2) {
+        const numerator = frac1.numerator * frac2.denominator - frac2.numerator * frac1.denominator;
+        const denominator = frac1.denominator * frac2.denominator;
+        return reduceFraction({ numerator, denominator });
+    }
+
+    function task1_13(operation) {
+        const str1 = document.getElementById('num1_13a').value;
+        const str2 = document.getElementById('num1_13b').value;
+        try {
+            const frac1 = parseFraction(str1);
+            const frac2 = parseFraction(str2);
+            let result;
+            if (operation === 'add') {
+                result = addFractions(frac1, frac2);
+            } else if (operation === 'subtract') {
+                result = subtractFractions(frac1, frac2);
+            }
+            document.getElementById('result1_13').textContent =
+                `Результат: ${result.numerator}/${result.denominator}`;
+        } catch (e) {
+            document.getElementById('result1_13').textContent = 'Ошибка: ' + e.message;
+        }
+    }
+
+    // 1.14. Числа, делящиеся на каждую из своих цифр
+    function divisibleByAllDigits(n, m) {
+        const result = [];
+
+        for (let num = n; num <= m; num++) {
+            const digits = num.toString().split('').map(Number);
+            let divisible = true;
+
+            for (const digit of digits) {
+                if (digit === 0 || num % digit !== 0) {
+                    divisible = false;
+                    break;
+                }
+            }
+
+            if (divisible) result.push(num);
+        }
+        return result;
+    }
+
+    function task1_14() {
+        const n = parseInt(document.getElementById('num1_14a').value);
+        const m = parseInt(document.getElementById('num1_14b').value);
+        if (isNaN(n) || isNaN(m) || n < 1 || m < 1 || n > m) {
+            document.getElementById('result1_14').textContent = 'Пожалуйста, введите корректный интервал';
+            return;
+        }
+        const numbers = divisibleByAllDigits(n, m);
+        document.getElementById('result1_14').textContent =
+            `Числа из [${n},${m}], делящиеся на все свои цифры: ${numbers.join(', ')}`;
+    }
+
+    // 1.15. Числа, делящиеся на сумму всех своих цифр
+    function divisibleBySumOfDigits(n, m) {
+        const result = [];
+
+        for (let num = n; num <= m; num++) {
+            const digits = num.toString().split('').map(Number);
+            const sum = digits.reduce((acc, digit) => acc + digit, 0);
+            if (sum !== 0 && num % sum === 0) {
+                result.push(num);
+            }
+        }
+        return result;
+    }
+
+    function task1_15() {
+        const n = parseInt(document.getElementById('num1_15a').value);
+        const m = parseInt(document.getElementById('num1_15b').value);
+        if (isNaN(n) || isNaN(m) || n < 1 || m < 1 || n > m) {
+            document.getElementById('result1_15').textContent = 'Пожалуйста, введите корректный интервал';
+            return;
+        }
+        const numbers = divisibleBySumOfDigits(n, m);
+        document.getElementById('result1_15').textContent =
+            `Числа из [${n},${m}], делящиеся на сумму своих цифр: ${numbers.join(', ')}`;
+    }
+</script>
+</body>
+</html>
