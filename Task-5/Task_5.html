@@ -483,7 +483,6 @@
     };
 
     const utils = {
-
         formatNumber: (num) => num.toLocaleString(),
 
         // Генерация ID
@@ -501,35 +500,8 @@
         }
     };
 
-    // Сервис работы с хранилищем. Просто мой личный эксперимент.
+    // Сервис работы с хранилищем
     const storageService = {
-        // Определение максимального размера localStorage
-        async getMaxSize() {
-            return new Promise((resolve) => {
-                const testKey = 'size_test';
-                let data = 'a';
-
-                const test = () => {
-                    try {
-                        data += 'a'.repeat(1024);
-                        localStorage.setItem(testKey, data);
-                        setTimeout(test, 0);
-                    } catch {
-                        const size = data.length * 2;
-                        localStorage.removeItem(testKey);
-                        resolve(size);
-                    }
-                };
-
-                setTimeout(() => {
-                    localStorage.removeItem(testKey);
-                    resolve(state.maxStorageSize);
-                }, 500);
-
-                test();
-            });
-        },
-
         // Расчет использования хранилища
         calculateUsage() {
             const ourData = localStorage.getItem(STORAGE_KEY);
@@ -561,7 +533,7 @@
             if (tasks && Array.isArray(tasks)) {
                 state.tasks = tasks;
             } else {
-                // Данные по умолчанию, для наглядности.
+                // Данные по умолчанию, для теста.
                 state.tasks = [
                     { id: 1, title: "Задача 1", description: "Описание задачи 1", priority: "high", completed: false },
                     { id: 2, title: "Задача 2", description: "Описание задачи 2", priority: "medium", completed: true },
@@ -608,38 +580,38 @@
 
             if (tasks.length === 0) {
                 DOM.tasksList.innerHTML = `
-                        <div class="empty-state">
-                            <div class="empty-state-icon">📝</div>
-                            <h3 class="empty-state-text">Список задач пуст</h3>
-                            <p>Нажмите кнопку "Создать", чтобы добавить первую задачу</p>
-                        </div>
-                    `;
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📝</div>
+                        <h3 class="empty-state-text">Список задач пуст</h3>
+                        <p>Нажмите кнопку "Создать", чтобы добавить первую задачу</p>
+                    </div>
+                `;
                 return;
             }
 
             DOM.tasksList.innerHTML = tasks.map(task => `
-                    <div class="task-item" data-id="${task.id}" role="listitem">
-                        <div class="task-checkbox">
-                            <input type="checkbox" class="completed-checkbox" ${task.completed ? 'checked' : ''}
-                                   aria-label="${task.completed ? 'Отметить как невыполненную' : 'Отметить как выполненную'}">
-                        </div>
-                        <div class="task-content">
-                            <div class="task-title ${task.completed ? 'completed' : ''}">${task.title}</div>
-                            <div class="task-priority ${PRIORITY_CLASSES[task.priority]}">
-                                ${this.getPriorityText(task.priority)}
-                            </div>
-                        </div>
-                        <div class="task-actions">
-                            <button class="btn btn-danger" title="Удалить задачу">🗑️</button>
+                <div class="task-item" data-id="${task.id}" role="listitem">
+                    <div class="task-checkbox">
+                        <input type="checkbox" class="completed-checkbox" ${task.completed ? 'checked' : ''}
+                               aria-label="${task.completed ? 'Отметить как невыполненную' : 'Отметить как выполненную'}">
+                    </div>
+                    <div class="task-content">
+                        <div class="task-title ${task.completed ? 'completed' : ''}">${task.title}</div>
+                        <div class="task-priority ${PRIORITY_CLASSES[task.priority]}">
+                            ${this.getPriorityText(task.priority)}
                         </div>
                     </div>
-                `).join('');
+                    <div class="task-actions">
+                        <button class="btn btn-danger" title="Удалить задачу">🗑️</button>
+                    </div>
+                </div>
+            `).join('');
         },
 
         // Текст приоритета
         getPriorityText(priority) {
             const texts = { high: 'Высокая', medium: 'Средняя', low: 'Низкая' };
-            return texts[priority] || 'Не указан';
+            return texts[priority];
         },
 
         // Переключение статуса выполнения
@@ -729,15 +701,14 @@
 
     // Инициализация приложения
     const initApp = {
-        async initialize() {
-            await this.initStorage();
+        initialize() {
+            this.initStorage();
             this.initTasks();
             this.bindEvents();
             this.updateUI();
         },
 
-        async initStorage() {
-            state.maxStorageSize = await storageService.getMaxSize();
+        initStorage() {
             storageService.loadTasks();
         },
 
