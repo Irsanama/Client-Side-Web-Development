@@ -1,3 +1,4 @@
+// Irsanama
 const readline = require('readline');
 
 // Создаем интерфейс для чтения из консоли

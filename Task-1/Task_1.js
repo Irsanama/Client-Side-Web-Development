@@ -1,3 +1,4 @@
+// Irsanama
 // 1.1. Проверка взаимно простых чисел
 function areCoprime(a, b) {
     const gcd = (x, y) => y === 0 ? x : gcd(y, x % y);

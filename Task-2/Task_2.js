@@ -1,3 +1,4 @@
+// Irsanama
 // 2.1. Преобразование kebab-case в snake-case
 function kebabToCamel(str) {
     return str.split('-').map((word, index) =>
