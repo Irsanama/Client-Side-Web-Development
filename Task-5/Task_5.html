@@ -1,0 +1,803 @@
+<!-- Irsanama -->
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Список задач</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+        }
+
+        body {
+            background-color: #f5f7fa;
+            line-height: 1.6;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+            position: relative;
+        }
+
+        .container {
+            display: flex;
+            width: min(100%, 1000px);
+            height: min(100vh - 40px, 600px);
+            background: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .storage-indicator {
+            position: absolute;
+            bottom: 15px;
+            right: 15px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 8px;
+            padding: 8px 12px;
+            font-size: 12px;
+            color: #6c757d;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(5px);
+            transition: all 0.3s ease;
+            opacity: 0.7;
+            z-index: 100;
+            cursor: pointer;
+        }
+
+        .storage-indicator:hover {
+            opacity: 1;
+            background: rgba(255, 255, 255, 0.95);
+        }
+
+        .storage-bar {
+            width: 120px;
+            height: 4px;
+            background: #e0e0e0;
+            border-radius: 2px;
+            margin-top: 4px;
+            overflow: hidden;
+        }
+
+        .storage-fill {
+            height: 100%;
+            border-radius: 2px;
+            transition: width 0.3s ease, background-color 0.3s ease;
+        }
+
+        .storage-low .storage-fill {
+            background: #2ecc71;
+        }
+
+        .storage-medium .storage-fill {
+            background: #f39c12;
+        }
+
+        .storage-high .storage-fill {
+            background: #e74c3c;
+        }
+
+        .tasks-list-container {
+            flex: 1;
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            transition: flex 0.3s ease;
+        }
+
+        .tasks-list-container.with-card {
+            flex: 0 0 calc(100% - 380px);
+        }
+
+        .tasks-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eaeaea;
+        }
+
+        .tasks-title {
+            font-size: clamp(1.25rem, 2vw, 1.5rem);
+            font-weight: 600;
+        }
+
+        .btn {
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s;
+            font-size: 14px;
+        }
+
+        .btn-primary {
+            background-color: #7d937d;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #7d937d;
+        }
+
+        .btn-secondary {
+            background-color: #f9fafb;
+            color: #6c757d;
+            border: 1px solid #eaeaea;
+        }
+
+        .btn-secondary:hover {
+            background-color: #e9ecef;
+        }
+
+        .btn-danger {
+            background: none;
+            color: #95a5a6;
+            padding: 5px;
+            font-size: 16px;
+        }
+
+        .btn-danger:hover {
+            color: #e74c3c;
+            background-color: #ffe6e6;
+        }
+
+        .tasks-list {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            overflow-y: auto;
+        }
+
+        .task-item {
+            background: #f9fafb;
+            border-radius: 8px;
+            padding: 15px;
+            border-left: 4px solid #7d937d;
+            transition: all 0.2s ease;
+            cursor: pointer;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+        .task-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .task-item.active {
+            background: #edf2ff;
+        }
+
+        .task-checkbox {
+            margin-top: 2px;
+            flex-shrink: 0;
+        }
+
+        .task-content {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .task-title {
+            font-weight: 600;
+            font-size: 16px;
+            margin-bottom: 5px;
+            transition: all 0.3s;
+            word-wrap: break-word;
+        }
+
+        .task-title.completed {
+            text-decoration: line-through;
+            color: #95a5a6;
+        }
+
+        .task-priority {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .priority-high { background-color: #ffe6e6; color: #e74c3c; }
+        .priority-medium { background-color: #fff4e6; color: #f39c12; }
+        .priority-low { background-color: #e6f7ff; color: #08b104; }
+
+        .task-actions {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-shrink: 0;
+        }
+
+        .task-card {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 380px;
+            height: 100%;
+            background: #ffffff;
+            padding: 30px;
+            border-left: 1px solid #eaeaea;
+            box-shadow: -5px 0 15px rgba(0, 0, 0, 0.05);
+            transform: translateX(100%);
+            transition: transform 0.3s ease;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            visibility: hidden;
+            opacity: 0;
+        }
+
+        .task-card.active {
+            transform: translateX(0);
+            visibility: visible;
+            opacity: 1;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eaeaea;
+            flex-shrink: 0;
+        }
+
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #eaeaea;
+            border-radius: 6px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #4a6cf7;
+        }
+
+        .form-textarea {
+            min-height: 120px;
+            resize: none;
+        }
+
+        .priority-options {
+            display: flex;
+            gap: 10px;
+            margin-top: 5px;
+        }
+
+        .priority-option {
+            flex: 1;
+            text-align: center;
+            padding: 10px;
+            border: 1px solid #eaeaea;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .priority-option.selected {
+            border-color: #4a6cf7;
+            background-color: #edf2ff;
+            color: #4a6cf7;
+            font-weight: 500;
+        }
+
+        .priority-high-option.selected {
+            border-color: #e74c3c;
+            background-color: #ffe6e6;
+            color: #e74c3c;
+        }
+
+        .priority-medium-option.selected {
+            border-color: #f39c12;
+            background-color: #fff4e6;
+            color: #f39c12;
+        }
+
+        .priority-low-option.selected {
+            border-color: #08b104;
+            background-color: #e6f7ff;
+            color: #08b104;
+        }
+
+        .card-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: auto;
+            flex-shrink: 0;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+                height: auto;
+                min-height: 100vh;
+            }
+
+            .task-card {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                transform: translateY(100%);
+            }
+
+            .task-card.active {
+                transform: translateY(0);
+            }
+
+            .tasks-list-container.with-card {
+                flex: 1;
+            }
+
+            .storage-indicator {
+                bottom: 10px;
+                right: 10px;
+                font-size: 11px;
+            }
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: #6c757d;
+        }
+
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            border: 0;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="tasks-list-container" id="tasksListContainer">
+        <div class="tasks-header">
+            <h1 class="tasks-title">Список задач</h1>
+            <button class="btn btn-primary" id="createTaskBtn">Создать</button>
+        </div>
+        <div class="tasks-list" id="tasksList" role="list">
+            <!-- Задачи будут здесь -->
+        </div>
+    </div>
+
+    <div class="task-card" id="taskCard" role="dialog" aria-labelledby="cardTitle" aria-hidden="true">
+        <div class="card-header">
+            <h2 class="card-title" id="cardTitle">Карточка задачи</h2>
+            <button class="btn btn-danger" id="closeCardBtn" aria-label="Закрыть">&times;</button>
+        </div>
+        <form class="task-form" id="taskForm">
+            <div class="form-group">
+                <label for="taskTitle" class="form-label">Задача</label>
+                <input type="text" id="taskTitle" class="form-control" placeholder="Введите название задачи" required>
+            </div>
+            <div class="form-group">
+                <label for="taskDescription" class="form-label">Описание задачи</label>
+                <textarea id="taskDescription" class="form-control form-textarea" placeholder="Введите описание задачи"></textarea>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Приоритет</label>
+                <div class="priority-options">
+                    <div class="priority-option priority-high-option selected" data-priority="high">Высокая</div>
+                    <div class="priority-option priority-medium-option" data-priority="medium">Средняя</div>
+                    <div class="priority-option priority-low-option" data-priority="low">Низкая</div>
+                </div>
+            </div>
+            <div class="card-actions">
+                <button type="button" class="btn btn-secondary" id="cancelBtn">Отмена</button>
+                <button type="submit" class="btn btn-primary">Сохранить</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="storage-indicator" id="storageIndicator" role="status" aria-live="polite">
+    <div class="storage-text">Хранилище: <span id="storageValue">0%</span></div>
+    <div class="storage-bar">
+        <div class="storage-fill" id="storageFill" style="width: 0%"></div>
+    </div>
+</div>
+
+<script>
+    const STORAGE_KEY = 'taskManagerData';
+    const DISPLAY_MODES = ['percent', 'mb', 'bits'];
+    const PRIORITY_CLASSES = {
+        high: 'priority-high',
+        medium: 'priority-medium',
+        low: 'priority-low'
+    };
+
+    // DOM элементы
+    const DOM = {
+        tasksList: document.getElementById('tasksList'),
+        tasksListContainer: document.getElementById('tasksListContainer'),
+        createTaskBtn: document.getElementById('createTaskBtn'),
+        taskCard: document.getElementById('taskCard'),
+        closeCardBtn: document.getElementById('closeCardBtn'),
+        taskForm: document.getElementById('taskForm'),
+        cardTitle: document.getElementById('cardTitle'),
+        taskTitleInput: document.getElementById('taskTitle'),
+        taskDescriptionInput: document.getElementById('taskDescription'),
+        cancelBtn: document.getElementById('cancelBtn'),
+        priorityOptions: document.querySelectorAll('.priority-option'),
+        storageIndicator: document.getElementById('storageIndicator'),
+        storageValue: document.getElementById('storageValue'),
+        storageFill: document.getElementById('storageFill')
+    };
+
+    // Состояние приложения
+    const state = {
+        tasks: [],
+        currentTaskId: null,
+        isEditing: false,
+        displayMode: 0,
+        maxStorageSize: 5 * 1024 * 1024
+    };
+
+    const utils = {
+        formatNumber: (num) => num.toLocaleString(),
+
+        // Генерация ID
+        generateId: (tasks) => tasks.length > 0 ? Math.max(...tasks.map(t => t.id)) + 1 : 1,
+
+        safeJSON: {
+            parse: (str) => {
+                try {
+                    return JSON.parse(str);
+                } catch {
+                    return null;
+                }
+            },
+            stringify: (obj) => JSON.stringify(obj)
+        }
+    };
+
+    // Работа с хранилищем
+    const storageService = {
+        // Расчет использования хранилища
+        calculateUsage() {
+            const ourData = localStorage.getItem(STORAGE_KEY);
+            const usedBytes = ourData ? ourData.length * 2 : 0;
+            const percent = Math.min(100, (usedBytes / state.maxStorageSize) * 100);
+
+            return {
+                percent,
+                usedMB: (usedBytes / (1024 * 1024)).toFixed(2),
+                maxMB: (state.maxStorageSize / (1024 * 1024)).toFixed(1),
+                usedBytes,
+                maxBytes: state.maxStorageSize,
+                usedBits: utils.formatNumber(usedBytes * 8),
+                maxBits: utils.formatNumber(state.maxStorageSize * 8)
+            };
+        },
+
+        // Сохранение задач
+        saveTasks() {
+            localStorage.setItem(STORAGE_KEY, utils.safeJSON.stringify(state.tasks));
+            this.updateIndicator();
+        },
+
+        // Загрузка задач
+        loadTasks() {
+            const stored = localStorage.getItem(STORAGE_KEY);
+            const tasks = utils.safeJSON.parse(stored);
+
+            if (tasks && Array.isArray(tasks)) {
+                state.tasks = tasks;
+            } else {
+                // Данные по умолчанию, для теста.
+                state.tasks = [
+                    { id: 1, title: "Задача 1", description: "Описание задачи 1", priority: "high", completed: false },
+                    { id: 2, title: "Задача 2", description: "Описание задачи 2", priority: "medium", completed: true },
+                    { id: 3, title: "Задача 4", description: "Описание задачи 4", priority: "low", completed: false },
+                    { id: 4, title: "Задача 5", description: "Описание задачи 5", priority: "high", completed: false },
+                ];
+                this.saveTasks();
+            }
+        },
+
+        updateIndicator() {
+            const data = this.calculateUsage();
+            const mode = DISPLAY_MODES[state.displayMode];
+
+            DOM.storageFill.style.width = `${data.percent}%`;
+
+            DOM.storageIndicator.classList.remove('storage-low', 'storage-medium', 'storage-high');
+
+            if (data.percent < 50) {
+                DOM.storageIndicator.classList.add('storage-low');
+            } else if (data.percent < 80) {
+                DOM.storageIndicator.classList.add('storage-medium');
+            } else {
+                DOM.storageIndicator.classList.add('storage-high');
+            }
+
+            const values = {
+                percent: `${Math.round(data.percent)}%`,
+                mb: `${data.usedMB} / ${data.maxMB} МБ`,
+                bits: `${data.usedBits} / ${data.maxBits} бит`
+            };
+
+            DOM.storageValue.textContent = values[mode];
+        }
+    };
+
+    // Работа с задачами
+    const taskService = {
+        // Рендер списка задач
+        renderTasks() {
+            const { tasks } = state;
+
+            if (tasks.length === 0) {
+                DOM.tasksList.innerHTML = `
+                    <div class="empty-state">
+                        <h3 class="empty-state-text">Список задач пуст</h3>
+                        <p>Нажмите кнопку "Создать", чтобы добавить первую задачу</p>
+                    </div>
+                `;
+                return;
+            }
+
+            DOM.tasksList.innerHTML = tasks.map(task => `
+                <div class="task-item" data-id="${task.id}" role="listitem">
+                    <div class="task-checkbox">
+                        <input type="checkbox" class="completed-checkbox" ${task.completed ? 'checked' : ''}
+                               aria-label="${task.completed ? 'Отметить как невыполненную' : 'Отметить как выполненную'}">
+                    </div>
+                    <div class="task-content">
+                        <div class="task-title ${task.completed ? 'completed' : ''}">${task.title}</div>
+                        <div class="task-priority ${PRIORITY_CLASSES[task.priority]}">
+                            ${this.getPriorityText(task.priority)}
+                        </div>
+                    </div>
+                    <div class="task-actions">
+                        <button class="btn btn-danger" title="Удалить задачу">🗑️</button>
+                    </div>
+                </div>
+            `).join('');
+        },
+
+        // Приоритеты
+        getPriorityText(priority) {
+            const texts = { high: 'Высокая', medium: 'Средняя', low: 'Низкая' };
+            return texts[priority];
+        },
+
+        // Переключение статуса выполнения
+        toggleCompletion(taskId, completed) {
+            const task = state.tasks.find(t => t.id === taskId);
+            if (task) {
+                task.completed = completed;
+                storageService.saveTasks();
+                this.renderTasks();
+
+                if (state.currentTaskId === taskId) {
+                    this.loadIntoForm(taskId);
+                }
+            }
+        },
+
+        // Удаление задачи
+        deleteTask(taskId) {
+            if (confirm('Вы уверены, что хотите удалить эту задачу?')) {
+                state.tasks = state.tasks.filter(task => task.id !== taskId);
+                storageService.saveTasks();
+
+                if (state.currentTaskId === taskId) {
+                    this.closeCard();
+                }
+
+                this.renderTasks();
+            }
+        },
+
+        // Загрузка задачи в форму
+        loadIntoForm(taskId) {
+            const task = state.tasks.find(t => t.id === taskId);
+            if (task) {
+                DOM.taskTitleInput.value = task.title;
+                DOM.taskDescriptionInput.value = task.description || '';
+                this.setPriority(task.priority);
+                state.currentTaskId = taskId;
+                state.isEditing = true;
+                DOM.cardTitle.textContent = 'Редактирование задачи';
+            }
+        },
+
+        // Установка приоритета
+        setPriority(priority) {
+            DOM.priorityOptions.forEach(option => {
+                const isSelected = option.dataset.priority === priority;
+                option.classList.toggle('selected', isSelected);
+                if (isSelected) {
+                    option.classList.add(`${option.dataset.priority}-option`);
+                }
+            });
+        },
+
+        // Получение выбранного приоритета
+        getSelectedPriority() {
+            const selected = document.querySelector('.priority-option.selected');
+            return selected ? selected.dataset.priority : 'medium';
+        },
+
+        // Сброс формы
+        resetForm() {
+            DOM.taskForm.reset();
+            this.setPriority('high');
+            state.currentTaskId = null;
+            state.isEditing = false;
+            DOM.cardTitle.textContent = 'Новая задача';
+
+            document.querySelectorAll('.task-item').forEach(item => {
+                item.classList.remove('active');
+            });
+        },
+
+        openCard() {
+            DOM.taskCard.classList.add('active');
+            DOM.taskCard.setAttribute('aria-hidden', 'false');
+            DOM.tasksListContainer.classList.add('with-card');
+        },
+
+        closeCard() {
+            DOM.taskCard.classList.remove('active');
+            DOM.taskCard.setAttribute('aria-hidden', 'true');
+            DOM.tasksListContainer.classList.remove('with-card');
+            this.resetForm();
+        }
+    };
+
+    // Инициализация приложения
+    const initApp = {
+        initialize() {
+            this.initStorage();
+            this.initTasks();
+            this.bindEvents();
+            this.updateUI();
+        },
+
+        initStorage() {
+            storageService.loadTasks();
+        },
+
+        initTasks() {
+            taskService.renderTasks();
+        },
+
+        bindEvents() {
+            DOM.tasksList.addEventListener('click', (e) => {
+                const taskItem = e.target.closest('.task-item');
+                if (!taskItem) return;
+
+                const taskId = parseInt(taskItem.dataset.id);
+
+                if (e.target.classList.contains('completed-checkbox')) {
+                    taskService.toggleCompletion(taskId, e.target.checked);
+                    return;
+                }
+
+                if (e.target.classList.contains('btn-danger')) {
+                    taskService.deleteTask(taskId);
+                    return;
+                }
+
+                document.querySelectorAll('.task-item').forEach(item => {
+                    item.classList.remove('active');
+                });
+                taskItem.classList.add('active');
+                taskService.loadIntoForm(taskId);
+                taskService.openCard();
+            });
+
+            DOM.createTaskBtn.addEventListener('click', () => {
+                taskService.resetForm();
+                taskService.openCard();
+            });
+
+            DOM.priorityOptions.forEach(option => {
+                option.addEventListener('click', () => {
+                    taskService.setPriority(option.dataset.priority);
+                });
+            });
+
+            DOM.taskForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                this.handleTaskSave();
+            });
+
+            DOM.cancelBtn.addEventListener('click', () => taskService.closeCard());
+            DOM.closeCardBtn.addEventListener('click', () => taskService.closeCard());
+
+            DOM.storageIndicator.addEventListener('click', (e) => {
+                e.stopPropagation();
+                this.toggleDisplayMode();
+            });
+        },
+
+        handleTaskSave() {
+            const title = DOM.taskTitleInput.value.trim();
+            const description = DOM.taskDescriptionInput.value.trim();
+            const priority = taskService.getSelectedPriority();
+
+            if (!title) {
+                alert('Пожалуйста, введите название задачи');
+                return;
+            }
+
+            if (state.isEditing && state.currentTaskId) {
+                const taskIndex = state.tasks.findIndex(t => t.id === state.currentTaskId);
+                if (taskIndex !== -1) {
+                    state.tasks[taskIndex] = { ...state.tasks[taskIndex], title, description, priority };
+                }
+            } else {
+                state.tasks.push({
+                    id: utils.generateId(state.tasks),
+                    title,
+                    description,
+                    priority,
+                    completed: false
+                });
+            }
+
+            storageService.saveTasks();
+            taskService.renderTasks();
+
+            if (!state.isEditing) {
+                taskService.resetForm();
+            }
+        },
+
+        toggleDisplayMode() {
+            state.displayMode = (state.displayMode + 1) % DISPLAY_MODES.length;
+            storageService.updateIndicator();
+        },
+
+        updateUI() {
+            storageService.updateIndicator();
+        }
+    };
+
+    document.addEventListener('DOMContentLoaded', () => initApp.initialize());
+</script>
+</body>
+</html>

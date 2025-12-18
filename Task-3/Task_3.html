@@ -1,0 +1,352 @@
+<!-- Irsanama -->
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Задания на работу с DOM</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #f5f5f5;
+            min-height: 100vh;
+            padding: 32px 16px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+        }
+
+        .card {
+            background: #ffffff;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 20px;
+        }
+
+        .card-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333333;
+            text-align: center;
+            margin-bottom: 16px;
+        }
+
+        .calendar-nav {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 12px;
+        }
+
+        .nav-btn {
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid #cccccc;
+            background: #FFFFFF;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .nav-btn:hover {
+            background: #f0f0f0;
+        }
+
+        .selectors {
+            display: flex;
+            gap: 8px;
+        }
+
+        .selector {
+            padding: 6px 10px;
+            border: 1px solid #cccccc;
+            border-radius: 4px;
+            font-size: 14px;
+            background: #FFFFFF;
+            cursor: pointer;
+        }
+
+        .today-btn {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 16px;
+            border: 1px solid #cccccc;
+            background: #FFFFFF;
+            border-radius: 4px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .today-btn:hover {
+            background: #f0f0f0;
+        }
+
+        .calendar-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+
+        .calendar-table th {
+            padding: 8px;
+            border-bottom: 1px solid #e0e0e0;
+            font-weight: 500;
+            color: #666666;
+        }
+
+        .calendar-table th.weekend {
+            color: #cc1c1c;
+        }
+
+        .calendar-table td {
+            padding: 8px;
+            text-align: center;
+            height: 40px;
+        }
+
+        .calendar-table td.weekend {
+            color: #cc1c1c;
+        }
+
+        .today {
+            background: #000000;
+            color: #FFFFFF;
+            font-weight: bold;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 28px;
+            height: 28px;
+        }
+
+        .mult-table-wrapper {
+            overflow-x: auto;
+        }
+
+        .mult-table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: center;
+            font-size: 14px;
+        }
+
+        .mult-table th {
+            padding: 8px;
+            background: #333333;
+            color: #FFFFFF;
+            border: 1px solid #cccccc;
+        }
+
+        .mult-table td {
+            padding: 8px;
+            border: 1px solid #e0e0e0;
+        }
+
+        .mult-table td:hover {
+            background: #f0f0f0;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="card">
+        <h2 class="card-title">Календарь</h2>
+
+        <div class="calendar-nav">
+            <button class="nav-btn" onclick="changeMonth(-1)"><</button>
+
+            <div class="selectors">
+                <select id="month-select" class="selector" onchange="updateCalendar()"></select>
+                <select id="year-select" class="selector" onchange="updateCalendar()"></select>
+            </div>
+
+            <button class="nav-btn" onclick="changeMonth(1)">></button>
+        </div>
+
+        <button class="today-btn" onclick="goToToday()">Сегодня</button>
+
+        <table class="calendar-table">
+            <thead>
+            <tr>
+                <th>Пн</th>
+                <th>Вт</th>
+                <th>Ср</th>
+                <th>Чт</th>
+                <th>Пт</th>
+                <th class="weekend">Сб</th>
+                <th class="weekend">Вс</th>
+            </tr>
+            </thead>
+            <tbody id="calendar-body">
+            </tbody>
+        </table>
+    </div>
+
+    <div class="card">
+        <h2 class="card-title">Таблица умножения</h2>
+        <div class="mult-table-wrapper">
+            <table id="multiplication-table" class="mult-table">
+            </table>
+        </div>
+    </div>
+</div>
+<script>
+    const realToday = new Date();
+    const realYear = realToday.getFullYear();
+    const realMonth = realToday.getMonth();
+    const realDay = realToday.getDate();
+
+    const monthNames = ['Январь', 'Февраль', 'Март', 'Апрель', 'Май',
+        'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'];
+
+    function initSelectors() {
+        const monthSelect = document.getElementById('month-select');
+        const yearSelect = document.getElementById('year-select');
+
+        monthNames.forEach((name, index) => {
+            const option = document.createElement('option');
+            option.value = index;
+            option.textContent = name;
+            monthSelect.appendChild(option);
+        });
+
+        for (let year = 1990; year <= 2050; year++) {
+            const option = document.createElement('option');
+            option.value = year;
+            option.textContent = year;
+            yearSelect.appendChild(option);
+        }
+
+        monthSelect.value = realMonth;
+        yearSelect.value = realYear;
+    }
+
+    function createCalendar(year, month) {
+        const firstDay = new Date(year, month, 1).getDay();
+        const startDay = firstDay === 0 ? 6 : firstDay - 1;
+        const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+        const tbody = document.getElementById('calendar-body');
+        tbody.innerHTML = '';
+
+        let date = 1;
+        for (let week = 0; week < 6; week++) {
+            if (date > daysInMonth) break;
+
+            const row = document.createElement('tr');
+
+            for (let day = 0; day < 7; day++){
+                const cell = document.createElement('td');
+
+                if (week === 0 && day < startDay) {
+                } else if (date > daysInMonth) {
+                } else {
+                    if (day === 5 || day === 6) {
+                        cell.className = 'weekend';
+                    }
+
+                    if (date === realDay && month === realMonth && year === realYear) {
+                        cell.innerHTML = '<span class="today">' + date + '</span>';
+                    } else {
+                        cell.textContent = date;
+                    }
+
+                    date++;
+                }
+
+                row.appendChild(cell);
+            }
+
+            tbody.appendChild(row);
+        }
+    }
+
+    function updateCalendar() {
+        const month = parseInt(document.getElementById('month-select').value);
+        const year = parseInt(document.getElementById('year-select').value);
+        createCalendar(year, month);
+    }
+
+    function changeMonth(delta) {
+        const monthSelect = document.getElementById('month-select');
+        const yearSelect = document.getElementById('year-select');
+
+        let month = parseInt(monthSelect.value) + delta;
+        let year = parseInt(yearSelect.value);
+
+        if (month > 11) {
+            month = 0;
+            year++;
+        } else if (month < 0) {
+            month = 11;
+            year--;
+        }
+
+        if (year >= 1990 && year <= 2050) {
+            monthSelect.value = month;
+            yearSelect.value = year;
+            updateCalendar();
+        }
+    }
+
+    function goToToday() {
+        document.getElementById('month-select').value = realMonth;
+        document.getElementById('year-select').value = realYear;
+        updateCalendar();
+    }
+
+    function createMultiplicationTable() {
+        const table =document.getElementById('multiplication-table');
+        table.innerHTML = '';
+
+        const headerRow = document.createElement('tr');
+        const emptyCell = document.createElement('th');
+        emptyCell.textContent = '';
+        headerRow.appendChild(emptyCell);
+
+        for (let i = 1; i <= 10; i++) {
+            const th = document.createElement('th');
+            th.textContent = i;
+            headerRow.appendChild(th);
+        }
+        table.appendChild(headerRow);
+
+        for (let i = 1; i <= 10; i++) {
+            const row = document.createElement('tr');
+
+            const rowHeader = document.createElement('th');
+            rowHeader.textContent = i;
+            row.appendChild(rowHeader);
+
+            for (let j = 1; j <= 10; j++) {
+                const cell = document.createElement('td');
+                cell.textContent = i * j;
+                row.appendChild(cell);
+            }
+
+            table.appendChild(row);
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        initSelectors();
+        updateCalendar();
+        createMultiplicationTable();
+    });
+</script>
+</body>
+</html>

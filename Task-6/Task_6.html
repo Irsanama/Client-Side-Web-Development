@@ -1,0 +1,719 @@
+<!-- Irsanama -->
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Сапёр</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+            background: white;
+            padding: 30px 20px;
+            color: #333;
+            gap: 30px;
+        }
+
+        .left-panel {
+            width: 220px;
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            flex-shrink: 0;
+        }
+
+        .right-panel {
+            width: 220px;
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            flex-shrink: 0;
+        }
+
+        .center-panel {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 25px;
+            color: #2c3e50;
+            font-size: 28px;
+            font-weight: 700;
+        }
+
+        .game-board-container {
+            display: flex;
+            justify-content: center;
+            width: 100%;
+            margin-bottom: 25px;
+        }
+
+        .game-board {
+            display: grid;
+            gap: 4px;
+            padding: 10px;
+            background-color: #fff;
+            border: 2px solid #e0e0e0;
+            border-radius: 5px;
+        }
+
+        .cell {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+            cursor: pointer;
+            user-select: none;
+            font-size: 14px;
+            transition: all 0.1s ease;
+            border-radius: 2px;
+            background-color: #e0e0e0;
+            border: 1px solid #a0a0a0;
+        }
+
+        .cell:hover {
+            background-color: #d0d0d0;
+        }
+
+        .cell.revealed {
+            background-color: #f5f5f5;
+            border: 1px solid #b0b0b0;
+        }
+
+        .cell.flagged::after {
+            content: "🚩";
+            font-size: 16px;
+        }
+
+        .cell.mine::after {
+            content: "💣";
+            font-size: 16px;
+        }
+
+        .cell.mine.exploded {
+            background-color: #ff5252;
+        }
+
+        .cell.highlighted {
+            background-color: #ffcc00;
+            box-shadow: 0 0 5px #ffcc00;
+        }
+
+        .number-1 { color: #1976d2; }
+        .number-2 { color: #388e3c; }
+        .number-3 { color: #d32f2f; }
+        .number-4 { color: #7b1fa2; }
+        .number-5 { color: #ff8f00; }
+        .number-6 { color: #0097a7; }
+        .number-7 { color: #5d4037; }
+        .number-8 { color: #616161; }
+
+        .controls {
+            margin-top: 15px;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+        }
+
+        button {
+            padding: 12px 25px;
+            background: #4a6ee0;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: all 0.2s ease;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+            background: #5a7ef0;
+        }
+
+        .game-status {
+            margin-top: 15px;
+            font-weight: bold;
+            min-height: 24px;
+            font-size: 18px;
+            text-align: center;
+            padding: 10px;
+            border-radius: 6px;
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .win {
+            background-color: #c8e6c9;
+            color: #2e7d32;
+        }
+
+        .lose {
+            background-color: #ffcdd2;
+            color: #c62828;
+        }
+
+        .panel-title {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 15px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #e0e0e0;
+            color: #2c3e50;
+        }
+
+        .instructions {
+            margin-top: 20px;
+            font-size: 14px;
+            line-height: 1.5;
+            color: #555;
+        }
+
+        .instructions h3 {
+            margin-bottom: 10px;
+            font-size: 16px;
+            color: #2c3e50;
+        }
+
+        .instructions ul {
+            margin-left: 15px;
+        }
+
+        .instructions li {
+            margin-bottom: 8px;
+        }
+
+        .key {
+            display: inline-block;
+            background: #e0e0e0;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: monospace;
+            font-weight: bold;
+            border: 1px solid #b0b0b0;
+        }
+
+        .stats {
+            margin-top: 20px;
+        }
+
+        .stat-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .difficulty-selector {
+            margin-top: 15px;
+        }
+
+        .difficulty-selector select {
+            width: 100%;
+            padding: 8px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+            background-color: white;
+        }
+
+        .game-info {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .info-box {
+            background: #fff;
+            color: #2c3e50;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: 0 3px 5px rgba(0, 0, 0, 0.1);
+            border: 1px solid #e0e0e0;
+        }
+
+        .info-box h3 {
+            font-size: 14px;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #666;
+        }
+
+        .info-box .value {
+            font-size: 24px;
+            font-weight: 700;
+            color: #2c3e50;
+        }
+
+        .timer {
+            font-size: 24px;
+            font-weight: 700;
+            text-align: center;
+            margin: 15px 0;
+            color: #2c3e50;
+            background: #fff;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+            box-shadow: 0 3px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        @media (max-width: 1100px) {
+            body {
+                flex-direction: column;
+                align-items: center;
+                gap: 20px;
+            }
+
+            .left-panel, .right-panel, .center-panel {
+                width: 100%;
+                max-width: 500px;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="left-panel">
+    <div class="panel-title">Управление</div>
+    <div class="instructions">
+        <h3>Мышь</h3>
+        <ul>
+            <li>Левая кнопка - открыть ячейку</li>
+            <li>Правая кнопка - поставить флаг</li>
+        </ul>
+
+        <h3>Клавиатура</h3>
+        <ul>
+            <li><span class="key">←↑↓→</span> - перемещение</li>
+            <li><span class="key">Пробел</span> или <span class="key">Enter</span> - открыть ячейку</li>
+            <li><span class="key">Ctrl</span> + <span class="key">Пробел</span> - поставить флаг</li>
+            <li><span class="key">R</span> - новая игра</li>
+        </ul>
+
+        <h3>Правила</h3>
+        <p>Откройте все ячейки, не содержащие мины. Числа показывают, сколько мин находится в соседних ячейках.</p>
+    </div>
+</div>
+
+<div class="center-panel">
+    <h1>САПЁР</h1>
+
+    <div class="game-board-container">
+        <div class="game-board" id="game-board"></div>
+    </div>
+
+    <div class="game-status" id="game-status"></div>
+
+    <div class="controls">
+        <button id="restart-btn">Новая игра</button>
+    </div>
+</div>
+
+<div class="right-panel">
+    <div class="panel-title">Информация</div>
+
+    <div class="timer">
+        <div id="timer">00:00:00</div>
+    </div>
+
+    <div class="game-info">
+        <div class="info-box">
+            <h3>МИНЫ</h3>
+            <div class="value" id="mine-count">20</div>
+        </div>
+
+        <div class="info-box">
+            <h3>ФЛАГИ</h3>
+            <div class="value" id="flag-count">0</div>
+        </div>
+    </div>
+
+    <div class="stats">
+        <div class="stat-item">
+            <span>Открыто ячеек:</span>
+            <span id="opened-cells">0</span>
+        </div>
+        <div class="stat-item">
+            <span>Всего ячеек:</span>
+            <span id="total-cells">144</span>
+        </div>
+        <div class="stat-item">
+            <span>Осталось мин:</span>
+            <span id="remaining-mines">20</span>
+        </div>
+    </div>
+
+    <div class="difficulty-selector">
+        <h3>Сложность</h3>
+        <select id="difficulty">
+            <option value="easy">Легкая (12x12, 20 мин)</option>
+            <option value="medium">Средняя (16x16, 40 мин)</option>
+            <option value="hard">Сложная (20x20, 80 мин)</option>
+        </select>
+    </div>
+</div>
+
+<script>
+    // Конфигурация игры
+    let BOARD_SIZE = 12;
+    let MINE_COUNT = 20;
+    let CELL_SIZE = 30;
+
+    // Состояние игры
+    let gameBoard = [];
+    let mines = [];
+    let revealedCells = 0;
+    let flaggedCells = 0;
+    let gameOver = false;
+    let firstClick = true;
+    let currentRow = 0;
+    let currentCol = 0;
+    let gameTimer = null;
+    let seconds = 0;
+
+    // DOM элементы.
+    const gameBoardElement = document.getElementById('game-board');
+    const mineCountElement = document.getElementById('mine-count');
+    const flagCountElement = document.getElementById('flag-count');
+    const gameStatusElement = document.getElementById('game-status');
+    const restartBtn = document.getElementById('restart-btn');
+    const timerElement = document.getElementById('timer');
+    const openedCellsElement = document.getElementById('opened-cells');
+    const totalCellsElement = document.getElementById('total-cells');
+    const remainingMinesElement = document.getElementById('remaining-mines');
+    const difficultySelect = document.getElementById('difficulty');
+
+    // Инициализация игры
+    function initGame() {
+        stopTimer();
+        seconds = 0;
+        updateTimerDisplay();
+
+        gameBoard = [];
+        mines = [];
+        revealedCells = 0;
+        flaggedCells = 0;
+        gameOver = false;
+        firstClick = true;
+        currentRow = 0;
+        currentCol = 0;
+
+        mineCountElement.textContent = MINE_COUNT;
+        flagCountElement.textContent = flaggedCells;
+        gameStatusElement.textContent = '';
+        gameStatusElement.className = 'game-status';
+        openedCellsElement.textContent = revealedCells;
+        totalCellsElement.textContent = BOARD_SIZE * BOARD_SIZE;
+        remainingMinesElement.textContent = MINE_COUNT;
+
+        gameBoardElement.innerHTML = '';
+
+        gameBoardElement.style.gridTemplateColumns = `repeat(${BOARD_SIZE}, ${CELL_SIZE}px)`;
+        gameBoardElement.style.gridTemplateRows = `repeat(${BOARD_SIZE}, ${CELL_SIZE}px)`;
+
+        for (let row = 0; row < BOARD_SIZE; row++) {
+            gameBoard[row] = [];
+            for (let col = 0; col < BOARD_SIZE; col++) {
+                const cell = document.createElement('div');
+                cell.className = 'cell';
+                cell.dataset.row = row;
+                cell.dataset.col = col;
+
+                cell.style.width = `${CELL_SIZE}px`;
+                cell.style.height = `${CELL_SIZE}px`;
+
+                cell.addEventListener('click', () => handleCellClick(row, col));
+                cell.addEventListener('contextmenu', (e) => {
+                    e.preventDefault();
+                    handleCellRightClick(row, col);
+                });
+
+                gameBoardElement.appendChild(cell);
+                gameBoard[row][col] = {
+                    element: cell,
+                    isMine: false,
+                    isRevealed: false,
+                    isFlagged: false,
+                    adjacentMines: 0
+                };
+            }
+        }
+        updateCursor();
+    }
+
+    // Генерация мин после первого клика
+    function generateMines(firstRow, firstCol) {
+        const safeCells = [];
+        for (let r = Math.max(0, firstRow - 1); r <= Math.min(BOARD_SIZE - 1, firstRow + 1); r++) {
+            for (let c = Math.max(0, firstCol - 1); c <= Math.min(BOARD_SIZE - 1, firstCol + 1); c++) {
+                safeCells.push(`${r},${c}`);
+            }
+        }
+
+        let minesPlaced = 0;
+        while (minesPlaced < MINE_COUNT) {
+            const row = Math.floor(Math.random() * BOARD_SIZE);
+            const col = Math.floor(Math.random() * BOARD_SIZE);
+
+            if (safeCells.includes(`${row},${col}`)) continue;
+
+            if (!gameBoard[row][col].isMine) {
+                gameBoard[row][col].isMine = true;
+                mines.push({row, col});
+                minesPlaced++;
+            }
+        }
+
+        // Подсчет мин вокруг каждой ячейки
+        for (let row = 0; row < BOARD_SIZE; row++) {
+            for (let col = 0; col < BOARD_SIZE; col++) {
+                if (!gameBoard[row][col].isMine) {
+                    gameBoard[row][col].adjacentMines = countAdjacentMines(row, col);
+                }
+            }
+        }
+    }
+
+    // Подсчет мин вокруг ячейки
+    function countAdjacentMines(row, col) {
+        let count = 0;
+        for (let r = Math.max(0, row - 1); r <= Math.min(BOARD_SIZE - 1, row + 1); r++) {
+            for (let c = Math.max(0, col - 1); c <= Math.min(BOARD_SIZE - 1, col + 1); c++) {
+                if (r === row && c === col) continue;
+                if (gameBoard[r][c].isMine) count++;
+            }
+        }
+        return count;
+    }
+
+    // Обработка клика по ячейке
+    function handleCellClick(row, col) {
+        if (gameOver || gameBoard[row][col].isFlagged) return;
+
+        if (firstClick) {
+            firstClick = false;
+            generateMines(row, col);
+            startTimer();
+        }
+        revealCell(row, col);
+    }
+
+    // Обработка правого клика по ячейке
+    function handleCellRightClick(row, col) {
+        if (gameOver || gameBoard[row][col].isRevealed) return;
+        toggleFlag(row, col);
+    }
+
+    // Открытие ячейки
+    function revealCell(row, col) {
+        if (gameBoard[row][col].isRevealed || gameBoard[row][col].isFlagged) return;
+
+        const cell = gameBoard[row][col];
+        cell.isRevealed = true;
+        cell.element.classList.add('revealed');
+
+        if (cell.isMine) {
+            // Если игрок наступил на мину
+            cell.element.classList.add('mine', 'exploded');
+            gameOver = true;
+            stopTimer();
+            revealAllMines();
+            gameStatusElement.textContent = 'Игра окончена! Вы проиграли!';
+            gameStatusElement.className = 'game-status lose';
+        } else {
+            revealedCells++;
+            openedCellsElement.textContent = revealedCells;
+
+            if (cell.adjacentMines > 0) {
+                // Показать количество мин вокруг
+                cell.element.textContent = cell.adjacentMines;
+                cell.element.classList.add(`number-${cell.adjacentMines}`);
+            } else {
+                // Если мин вокруг нет, открываем соседние ячейки
+                for (let r = Math.max(0, row - 1); r <= Math.min(BOARD_SIZE - 1, row + 1); r++) {
+                    for (let c = Math.max(0, col - 1); c <= Math.min(BOARD_SIZE - 1, col + 1); c++) {
+                        if (r === row && c === col) continue;
+                        revealCell(r, c);
+                    }
+                }
+            }
+
+            // Проверка победы
+            if (revealedCells === BOARD_SIZE * BOARD_SIZE - MINE_COUNT) {
+                gameOver = true;
+                stopTimer();
+                gameStatusElement.textContent = 'Поздравляем! Вы выиграли!';
+                gameStatusElement.className = 'game-status win';
+                flagAllMines();
+            }
+        }
+    }
+
+    // Установка/снятие флажка
+    function toggleFlag(row, col) {
+        const cell = gameBoard[row][col];
+
+        if (cell.isFlagged) {
+            cell.isFlagged = false;
+            cell.element.classList.remove('flagged');
+            flaggedCells--;
+        } else {
+            cell.isFlagged = true;
+            cell.element.classList.add('flagged');
+            flaggedCells++;
+        }
+
+        flagCountElement.textContent = flaggedCells;
+        remainingMinesElement.textContent = MINE_COUNT - flaggedCells;
+    }
+
+    // Отображение всех мин при проигрыше
+    function revealAllMines() {
+        for (const mine of mines) {
+            const cell = gameBoard[mine.row][mine.col];
+            if (!cell.isFlagged) {
+                cell.element.classList.add('mine');
+            }
+        }
+    }
+
+    // Отображение всех мин при победе
+    function flagAllMines() {
+        for (const mine of mines) {
+            const cell = gameBoard[mine.row][mine.col];
+            if (!cell.isFlagged) {
+                toggleFlag(mine.row, mine.col);
+            }
+        }
+    }
+
+    function updateCursor() {
+        document.querySelectorAll('.cell').forEach(cell => {
+            cell.classList.remove('highlighted');
+        });
+
+        if (!gameOver) {
+            gameBoard[currentRow][currentCol].element.classList.add('highlighted');
+        }
+    }
+
+    // Таймер
+    function startTimer() {
+        if (gameTimer) return;
+        gameTimer = setInterval(() => {
+            seconds++;
+            updateTimerDisplay();
+        }, 1000);
+    }
+
+    function stopTimer() {
+        clearInterval(gameTimer);
+        gameTimer = null;
+    }
+
+    function updateTimerDisplay() {
+        const hours = Math.floor(seconds / 3600);
+        const minutes = Math.floor((seconds % 3600) / 60);
+        const secs = seconds % 60;
+
+        timerElement.textContent =
+            `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+    }
+
+    // Обработка нажатий клавиш
+    document.addEventListener('keydown', (e) => {
+        if (gameOver) return;
+
+        let newRow = currentRow;
+        let newCol = currentCol;
+
+        switch(e.key) {
+            case 'ArrowUp':
+                newRow = Math.max(0, currentRow - 1);
+                break;
+            case 'ArrowDown':
+                newRow = Math.min(BOARD_SIZE - 1, currentRow + 1);
+                break;
+            case 'ArrowLeft':
+                newCol = Math.max(0, currentCol - 1);
+                break;
+            case 'ArrowRight':
+                newCol = Math.min(BOARD_SIZE - 1, currentCol + 1);
+                break;
+            case ' ':
+            case 'Enter':
+                e.preventDefault();
+                if (e.ctrlKey) {
+                    handleCellRightClick(currentRow, currentCol);
+                } else {
+                    handleCellClick(currentRow, currentCol);
+                }
+                break;
+            case 'r':
+            case 'R':
+            case 'к':
+            case "К":
+                initGame();
+                break;
+            default:
+                return;
+        }
+
+        if (newRow !== currentRow || newCol !== currentCol) {
+            currentRow = newRow;
+            currentCol = newCol;
+            updateCursor();
+        }
+    });
+
+    restartBtn.addEventListener('click', initGame);
+
+    // Обработчик изменения сложности
+    difficultySelect.addEventListener('change', function() {
+        switch(this.value) {
+            case 'easy':
+                BOARD_SIZE = 12;
+                MINE_COUNT = 20;
+                CELL_SIZE = 30;
+                break;
+            case 'medium':
+                BOARD_SIZE = 16;
+                MINE_COUNT = 40;
+                CELL_SIZE = 25;
+                break;
+            case 'hard':
+                BOARD_SIZE = 20;
+                MINE_COUNT = 80;
+                CELL_SIZE = 20;
+                break;
+        }
+        initGame();
+    });
+
+    window.addEventListener('load', initGame);
+</script>
+</body>
+</html>

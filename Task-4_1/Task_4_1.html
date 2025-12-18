@@ -1,0 +1,277 @@
+<!-- Irsanama -->
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Конструктор визиток. Версия 1.</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+
+        body {
+            margin: 0;
+            padding: 0;
+            background: url('img/main_img.jpg') no-repeat fixed;
+            background-size: cover;
+            min-height: 100vh;
+            font-family: 'Roboto', sans-serif;
+            position: relative;
+        }
+
+        .left-block {
+            position: absolute;
+            top: 0;
+            left: 390px;
+            width: 570px;
+            height: 100vh;
+            background: #FFFFFF;
+            box-shadow: 0 0 6px #00000029;
+            padding-top: 32px;
+        }
+
+        .page-title {
+            width: 203px;
+            margin: 0 0 0 15px;
+            font: bold 20px/24px Roboto;
+            color: #707070;
+        }
+
+        .input-label {
+            position: absolute;
+            left: 15px;
+            font: normal 14px/17px Roboto;
+            color: #707070;
+            margin: 0;
+        }
+
+        .input-label:nth-of-type(1) { top: 87px; width: 187px; }
+        .input-label:nth-of-type(2) { top: 148px; width: 159px; }
+        .input-label:nth-of-type(3) { top: 209px; width: 75px; }
+        .input-label:nth-of-type(4) { top: 270px; width: 57px; }
+        .input-label:nth-of-type(5) { top: 331px; width: 39px; }
+        .input-label:nth-of-type(6) { top: 392px; width: 40px; }
+
+        .text-input {
+            position: absolute;
+            left: 15px;
+            width: 255px;
+            height: 24px;
+            background: #FFFFFF;
+            border: 1px solid #AAAAAABF;
+            border-radius: 2px;
+            padding: 0 5px;
+            font: normal 14px Roboto;
+            color: #202020;
+            box-sizing: border-box;
+        }
+
+        .text-input:nth-of-type(1) { top: 109px; }
+        .text-input:nth-of-type(2) { top: 170px; }
+        .text-input:nth-of-type(3) { top: 231px; }
+        .text-input:nth-of-type(4) { top: 292px; }
+        .text-input:nth-of-type(5) { top: 353px; }
+        .text-input:nth-of-type(6) { top: 414px; }
+
+        .apply-button {
+            position: absolute;
+            top: 453px;
+            left: 15px;
+            width: 126px;
+            height: 32px;
+            background: #3F88E8;
+            border: none;
+            border-radius: 32px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+        }
+
+        .apply-button:hover {
+            background: #2D78D8;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .apply-button:active {
+            background: #1C68C8;
+            transform: translateY(1px);
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+        }
+
+        .apply-button-text {
+            font: normal 14px/17px Roboto;
+            color: #FFFFFF;
+        }
+
+        .text-input::placeholder {
+            color: #202020;
+            opacity: 0.7;
+        }
+
+        .right-block {
+            position: absolute;
+            top: 78px;
+            left: 1025px;
+            width: 445px;
+            height: 268px;
+            background: #FFFFFF;
+            box-shadow: 0 6px 12px #00000029;
+            border: 1px solid #707070A8;
+            border-radius: 6px;
+        }
+
+        .visiting-card {
+            padding: 20px;
+            height: 100%;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card-company {
+            text-align: center;
+            font: normal 10px/13px Roboto;
+            color: #202020;
+            margin-bottom: 25px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .card-fio {
+            text-align: center;
+            font: bold 26px/32px Roboto;
+            color: #202020;
+            margin-bottom: 10px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .card-position {
+            text-align: center;
+            font: normal 14px/17px Roboto;
+            color: #202020BF;
+            margin-bottom: 20px;
+            word-wrap: break-word;
+            max-height: 34px;
+            overflow: hidden;
+        }
+
+        .card-contacts {
+            margin-top: auto;
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .contacts-inner {
+            text-align: left;
+        }
+
+        .card-phone,
+        .card-email,
+        .card-address {
+            font: normal 12px/14px Roboto;
+            color: #202020;
+            margin-bottom: 8px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+    </style>
+</head>
+<body>
+<div class="left-block">
+    <h1 class="page-title">Конструктор визиток</h1>
+    <label class="input-label">Наименование организации</label>
+    <input type="text" class="text-input" placeholder='ООО "Ориентир"'>
+
+    <label class="input-label">Фамилия, имя, отчество</label>
+    <input type="text" class="text-input" placeholder="Фёдоров Иван Семенович">
+
+    <label class="input-label">Должность</label>
+    <input type="text" class="text-input" placeholder="Менеджер по развитию">
+
+    <label class="input-label">Телефон</label>
+    <input type="tel" class="text-input" placeholder="89991234567">
+
+    <label class="input-label">E-mail</label>
+    <input type="email" class="text-input" placeholder="fedorov.is@orientir.org">
+
+    <label class="input-label">Адрес</label>
+    <input type="text" class="text-input" placeholder="Иркутск, Байкальская, 421, оф. 12">
+
+    <button class="apply-button" id="apply-btn">
+        <span class="apply-button-text">Применить</span>
+    </button>
+</div>
+
+<div class="right-block">
+    <div class="visiting-card">
+        <div class="card-company" id="card-company">ООО "Ориентир"</div>
+        <div class="card-fio" id="card-fio">Фёдоров Иван Семенович</div>
+        <div class="card-position" id="card-position">Менеджер по развитию</div>
+        <div class="card-contacts">
+            <div class="contacts-inner">
+                <div class="card-phone" id="card-phone">8 (999) 123-45-67</div>
+                <div class="card-email" id="card-email">fedorov.is@orientir.org</div>
+                <div class="card-address" id="card-address">Иркутск, Байкальская, 421, оф. 12</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const applyButton = document.getElementById('apply-btn');
+        const inputs = document.querySelectorAll('.text-input');
+
+        function formatPhone(phone) {
+            let digits = phone.replace(/\D/g, '');
+
+            if (digits.length === 11) {
+                return digits.replace(/(\d)(\d{3})(\d{3})(\d{2})(\d{2})/, '$1 ($2) $3-$4-$5');
+            } else if (digits.length === 10) {
+                return '8 (' + digits.substring(0, 3) + ') ' + digits.substring(3, 6) + '-' + digits.substring(6, 8) + '-' + digits.substring(8, 10);
+            }
+            return phone;
+        }
+
+        function adjustFontSize(element) {
+            const originalFontSize = 26;
+            const minFontSize = 18;
+            let fontSize = originalFontSize;
+
+            element.style.fontSize = fontSize + 'px';
+            element.style.lineHeight = (fontSize + 6) + 'px';
+
+            while (element.scrollWidth > element.offsetWidth && fontSize > minFontSize) {
+                fontSize--;
+                element.style.fontSize = fontSize + 'px';
+                element.style.lineHeight = (fontSize + 6) + 'px';
+            }
+        }
+
+        applyButton.addEventListener('click', function() {
+            const values = Array.from(inputs).map(input =>
+                input.value || input.placeholder
+            );
+
+            const formattedPhone = formatPhone(values[3]);
+
+            document.getElementById('card-company').textContent = values[0];
+            document.getElementById('card-fio').textContent = values[1];
+            document.getElementById('card-position').textContent = values[2];
+            document.getElementById('card-phone').textContent = formattedPhone;
+            document.getElementById('card-email').textContent = values[4];
+            document.getElementById('card-address').textContent = values[5];
+
+            adjustFontSize(document.getElementById('card-fio'));
+        });
+
+        applyButton.click();
+    });
+</script>
+</body>
+</html>
