@@ -81,7 +81,7 @@ console.log('Исходный:', original);
 console.log('Копия 1 (reverse):', copy1);
 console.log('Копия 2 (sort):', copy2);
 
-console.log('\n=== 2.3 Переводчик (с немецким) ===');
+console.log('\n=== 2.3 Переводчик ===');
 console.log('hello -> ru:', translate('hello', 'ru'));
 console.log('hello -> ru:', translate('hello', 'ru'));
 console.log('cat -> ru:', translate('cat', 'ru'));
